@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>CustomLabel.qml</file>
+        <file>RectDivider.qml</file>
+        <file>CustomInput.qml</file>
+        <file>CustomTableView.qml</file>
+    </qresource>
+</RCC>
