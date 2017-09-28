@@ -9,13 +9,13 @@ int main(int argc, char *argv[])
     scheduler.addQueue(new Queue("a2", 5, 100, 100, 5));
     scheduler.run();
 
-//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//    QGuiApplication app(argc, argv);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication app(argc, argv);
 
-//    QQmlApplicationEngine engine;
-//    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
-//    if (engine.rootObjects().isEmpty())
-//        return -1;
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QLatin1String("qrc:/qml/main.qml")));
+    if (engine.rootObjects().isEmpty())
+        return -1;
 
-//    return app.exec();
+    return app.exec();
 }

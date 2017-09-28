@@ -3,7 +3,6 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += main.cpp
-
 HEADERS += cpp/Scheduler.h
 SOURCES += cpp/Scheduler.cpp
 HEADERS += cpp/Queue.h

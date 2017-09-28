@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>CustomLabel.qml</file>
-        <file>RectDivider.qml</file>
-        <file>CustomInput.qml</file>
-        <file>CustomTableView.qml</file>
+        <file>qml/CustomInput.qml</file>
+        <file>qml/CustomLabel.qml</file>
+        <file>qml/CustomTableView.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/RectDivider.qml</file>
     </qresource>
 </RCC>
