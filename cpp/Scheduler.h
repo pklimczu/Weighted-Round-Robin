@@ -1,7 +1,7 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 #include "Queue.h"
-#include <vector>
+#include <map>
 #include <queue>
 
 class Scheduler
@@ -9,6 +9,7 @@ class Scheduler
 public:
     enum ServerState { IDLE, WORKING };
     enum SimulationEventType { IncomingPacket, ProcessPacket };
+    typedef std::map<std::string, Queue*> SimulationMap;
 
     struct SimulationEventStruct
     {
@@ -25,8 +26,10 @@ public:
     Scheduler();
     Scheduler(int linkMaxThroughput, int endTime);
 
-    bool addQueue(Queue &queue);
+    bool addQueue(Queue *queue);
     bool removeQueue(Queue &queue);
+
+    void run();
 
 private:
     void _normalizeQueuesWeights();
@@ -38,7 +41,7 @@ private:
 
     double _generateTime(double lambda);
 
-    std::vector<Queue> m_QueuesVector;
+    SimulationMap m_QueuesMap;
     std::priority_queue<SimulationEventStruct> m_EventPriorityQueue;
     int m_LinkMaxThroughput;
     int m_EndTime;

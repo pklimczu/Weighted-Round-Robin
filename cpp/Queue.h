@@ -25,6 +25,11 @@ public:
      */
     bool getPacket(Packet &packet);
 
+    float getRatio() const { return m_Ratio; }
+    std::string getName() const { return m_Name; }
+    int getPacketsPerIteration() const { return m_NumberOfPacketsPerIteration; }
+    void setNumberOfPacketsPerIteration(int packetsNumber);
+
     int getNumberOfPacketsInBuffor() const { return m_NumberOfPacketsInBuffor; }
     int getNumberOfProcessedPackets() const { return m_NumberOfProcessedPackets; }
     int getNumberOfRejectedPackets() const { return m_NumberOfRejectedPackets; }

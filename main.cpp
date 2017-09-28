@@ -1,15 +1,21 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include "cpp/Scheduler.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
+    Scheduler scheduler;
+    scheduler.addQueue(new Queue("a1", 5, 10, 5, 5));
+    scheduler.addQueue(new Queue("a2", 5, 100, 100, 5));
+    scheduler.run();
 
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
-        return -1;
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//    QGuiApplication app(argc, argv);
 
-    return app.exec();
+//    QQmlApplicationEngine engine;
+//    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
+//    if (engine.rootObjects().isEmpty())
+//        return -1;
+
+//    return app.exec();
 }

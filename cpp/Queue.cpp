@@ -1,5 +1,6 @@
 #include "Queue.h"
 #include "Scheduler.h"
+#include <iostream>
 
 extern double globalTime;
 
@@ -51,5 +52,14 @@ bool Queue::getPacket(Packet &packet)
     {
         m_NumberOfRejectedPackets++;
         return false;
+    }
+}
+
+void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
+{
+    std::cout << "Queue " << m_Name << ": " << packetsNumber << " per iteration." << std::endl;
+    if (m_NumberOfPacketsPerIteration != packetsNumber)
+    {
+        m_NumberOfPacketsPerIteration = packetsNumber;
     }
 }
