@@ -3,6 +3,7 @@
 #include <iostream>
 
 extern double globalTime;
+static const int SCALING_FACTOR = 100;
 
 Queue::Queue()
 {
@@ -20,7 +21,9 @@ Queue::Queue(std::string name, int lambda, int avgPacketSize, int weight, int bu
     m_NumberOfPacketsInBuffor(0),
     m_NumberOfProcessedPackets(0),
     m_NumberOfRejectedPackets(0),
-    m_NumberOfPacketsServedWithoutBeingInQueue(0)
+    m_NumberOfPacketsServedWithoutBeingInQueue(0),
+    m_Generator(std::random_device{}()),
+    m_Distribution(SCALING_FACTOR * lambda)
 {
     m_Ratio = static_cast<float>(m_Weight)/static_cast<float>(m_AvgPacketSize);
 }
@@ -41,7 +44,7 @@ bool Queue::returnPacket(Packet &packet)
 
 bool Queue::getPacket(Packet &packet)
 {
-    if (m_Queue.size() < m_BufforSize)
+    if (static_cast<int>(m_Queue.size()) < m_BufforSize)
     {
         m_Queue.push_back(packet);
         m_NumberOfPacketsInBuffor++;
@@ -62,4 +65,11 @@ void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
     {
         m_NumberOfPacketsPerIteration = packetsNumber;
     }
+}
+
+double Queue::generateRandomTime()
+{
+    auto comp = [](int a, int b) { return a < b; };
+    float makeRoundProperly = 1000;
+    return round(1.0 * SCALING_FACTOR * makeRoundProperly / static_cast<double>(m_Distribution(m_Generator))) / makeRoundProperly;
 }

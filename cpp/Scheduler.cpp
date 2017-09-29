@@ -5,10 +5,7 @@
 
 double globalTime = 0;
 
-Scheduler::Scheduler()
-{
-
-}
+Scheduler::Scheduler() { }
 
 Scheduler::Scheduler(int linkMaxThroughput, int endTime)    :
     m_LinkMaxThroughput(linkMaxThroughput),
@@ -34,6 +31,7 @@ bool Scheduler::removeQueue(Queue &queue)
 void Scheduler::run()
 {
     _normalizeQueuesWeights();
+    _doZeroIteration();
 }
 
 void Scheduler::_normalizeQueuesWeights()
@@ -67,7 +65,25 @@ void Scheduler::_normalizeQueuesWeights()
 
 void Scheduler::_doZeroIteration()
 {
+    for (const auto &q : m_QueuesMap)
+    {
+        auto newEvent = std::make_shared<SimulationEventStruct>(q.second->generateRandomTime(),
+                                                                q.second->getName(),
+                                                                IncomingPacket);
+        m_EventPriorityQueue.push(newEvent);
 
+        newEvent = std::make_shared<SimulationEventStruct>(q.second->generateRandomTime(),
+                                                                q.second->getName(),
+                                                                IncomingPacket);
+        m_EventPriorityQueue.push(newEvent);
+    }
+
+    while (!m_EventPriorityQueue.empty())
+    {
+        auto event = m_EventPriorityQueue.top();
+        m_EventPriorityQueue.pop();
+        std::cout << "# " << event.get()->queueName << " " << event.get()->eventTime << std::endl;
+    }
 }
 
 void Scheduler::_runSimulation()
@@ -86,11 +102,6 @@ void Scheduler::_processPacketDeparture()
 }
 
 void Scheduler::_prepareStatistics()
-{
-
-}
-
-double Scheduler::_generateTime(double lambda)
 {
 
 }

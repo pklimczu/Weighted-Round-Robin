@@ -3,6 +3,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <random>
 #include "Packet.h"
 
 class Queue
@@ -36,6 +37,7 @@ public:
     int getNumberOfPacketsServedWithoutBeingInQueue() const { return m_NumberOfPacketsServedWithoutBeingInQueue; }
 
     void addPacketProcessedWithoutBeingInQueue() { m_NumberOfPacketsServedWithoutBeingInQueue++; }
+    double generateRandomTime();
 
 private:
     int m_Lambda;               // Determines frequency of incoming next packets due to Poisson distribution
@@ -50,6 +52,9 @@ private:
     int m_NumberOfProcessedPackets;
     int m_NumberOfRejectedPackets;
     int m_NumberOfPacketsServedWithoutBeingInQueue;
+
+    std::default_random_engine m_Generator;
+    std::poisson_distribution<int> m_Distribution;
 
     std::deque<Packet> m_Queue;
 

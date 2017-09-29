@@ -3,6 +3,8 @@
 #include "Queue.h"
 #include <map>
 #include <queue>
+#include <memory>
+#include <functional>
 
 class Scheduler
 {
@@ -13,13 +15,24 @@ public:
 
     struct SimulationEventStruct
     {
+        SimulationEventStruct(double eT, std::string qN, SimulationEventType sET) :
+            eventTime(eT), queueName(qN), simulationEventType(sET) {}
         double eventTime;
-        int queueNumber;
+        std::string queueName;
         SimulationEventType simulationEventType;
 
         bool operator<(const SimulationEventStruct &other) const
         {
             return eventTime < other.eventTime;
+        }
+    };
+    typedef std::shared_ptr<SimulationEventStruct> pSimulationEventStruct;
+
+    struct Comparator
+    {
+        bool operator() (pSimulationEventStruct &a, pSimulationEventStruct &b)
+        {
+            return a.get()->eventTime > b.get()->eventTime;
         }
     };
 
@@ -42,7 +55,10 @@ private:
     double _generateTime(double lambda);
 
     SimulationMap m_QueuesMap;
-    std::priority_queue<SimulationEventStruct> m_EventPriorityQueue;
+
+    std::priority_queue<pSimulationEventStruct,
+                        std::vector<pSimulationEventStruct>,
+                        Comparator> m_EventPriorityQueue;
     int m_LinkMaxThroughput;
     int m_EndTime;
     int m_QueuesIterationCounter;
