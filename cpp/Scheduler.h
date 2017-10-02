@@ -48,8 +48,8 @@ private:
     void _normalizeQueuesWeights();
     void _doZeroIteration();
     void _runSimulation();
-    void _processPacketArrival();
-    void _processPacketDeparture();
+    void _processPacketArrival(SimulationEventStruct &event);
+    void _processPacketDeparture(SimulationEventStruct &event);
     void _prepareStatistics();
 
     double _generateTime(double lambda);
@@ -62,6 +62,8 @@ private:
     int m_LinkMaxThroughput;
     int m_EndTime;
     int m_QueuesIterationCounter;
+    ServerState m_ServerState;
+    std::string m_ActiveQueueName;
 
 };
 

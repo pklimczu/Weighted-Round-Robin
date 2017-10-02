@@ -1,5 +1,10 @@
 #include "Packet.h"
 
+Packet::Packet(float timeOfArrival) :
+    m_PacketSize(0),
+    m_TimeOfArrival(timeOfArrival)
+{ }
+
 Packet::Packet(int packetSize, float timeOfArrival)  :
     m_PacketSize(packetSize),
     m_TimeOfArrival(timeOfArrival)

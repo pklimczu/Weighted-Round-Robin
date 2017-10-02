@@ -10,7 +10,8 @@ Scheduler::Scheduler() { }
 Scheduler::Scheduler(int linkMaxThroughput, int endTime)    :
     m_LinkMaxThroughput(linkMaxThroughput),
     m_EndTime(endTime),
-    m_QueuesIterationCounter(0)
+    m_QueuesIterationCounter(0),
+    m_ServerState(IDLE)
 {
     m_QueuesMap.clear();
 }
@@ -32,6 +33,7 @@ void Scheduler::run()
 {
     _normalizeQueuesWeights();
     _doZeroIteration();
+    _runSimulation();
 }
 
 void Scheduler::_normalizeQueuesWeights()
@@ -71,32 +73,54 @@ void Scheduler::_doZeroIteration()
                                                                 q.second->getName(),
                                                                 IncomingPacket);
         m_EventPriorityQueue.push(newEvent);
-
-        newEvent = std::make_shared<SimulationEventStruct>(q.second->generateRandomTime(),
-                                                                q.second->getName(),
-                                                                IncomingPacket);
-        m_EventPriorityQueue.push(newEvent);
-    }
-
-    while (!m_EventPriorityQueue.empty())
-    {
-        auto event = m_EventPriorityQueue.top();
-        m_EventPriorityQueue.pop();
-        std::cout << "# " << event.get()->queueName << " " << event.get()->eventTime << std::endl;
     }
 }
 
 void Scheduler::_runSimulation()
 {
+    while (globalTime < m_EndTime)
+    {
+        if (m_EventPriorityQueue.empty())
+            break;
+        auto event = m_EventPriorityQueue.top();
+        m_EventPriorityQueue.pop();
+        globalTime = event.get()->eventTime;
 
+        switch (event.get()->simulationEventType)
+        {
+            case IncomingPacket:
+                _processPacketArrival(*event.get());
+                break;
+            case ProcessPacket:
+                _processPacketDeparture(*event.get());
+                break;
+            default:
+                break;
+        }
+    }
+    _prepareStatistics();
 }
 
-void Scheduler::_processPacketArrival()
+void Scheduler::_processPacketArrival(SimulationEventStruct &event)
 {
-
+    double timeOfArrivalNextPacket = globalTime + m_QueuesMap[event.queueName]->generateRandomTime();
+    auto newEvent = std::make_shared<SimulationEventStruct>(timeOfArrivalNextPacket,
+                                                            event.queueName,
+                                                            IncomingPacket);
+    if (m_ServerState == IDLE)
+    {
+        _processPacketDeparture(event);
+        m_QueuesMap[event.queueName]->addPacketProcessedWithoutBeingInQueue();
+        m_ActiveQueueName = event.queueName;
+    }
+    else    // m_ServerState == WORKING
+    {
+        Packet *packet = new Packet(event.eventTime);
+        m_QueuesMap[event.queueName]->getPacket(packet);
+    }
 }
 
-void Scheduler::_processPacketDeparture()
+void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
 {
 
 }

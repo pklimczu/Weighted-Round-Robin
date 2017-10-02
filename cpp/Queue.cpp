@@ -28,13 +28,13 @@ Queue::Queue(std::string name, int lambda, int avgPacketSize, int weight, int bu
     m_Ratio = static_cast<float>(m_Weight)/static_cast<float>(m_AvgPacketSize);
 }
 
-bool Queue::returnPacket(Packet &packet)
+bool Queue::returnPacket(Packet *packet)
 {
     if (m_Queue.size() > 0)
     {
         packet = m_Queue.front();
         m_Queue.pop_front();
-        m_Intervals.push_back(globalTime - packet.getTimeOfArrival());
+        m_Intervals.push_back(globalTime - packet->getTimeOfArrival());
         m_NumberOfPacketsInBuffor--;
         m_NumberOfProcessedPackets++;
         return true;
@@ -42,7 +42,7 @@ bool Queue::returnPacket(Packet &packet)
     return false;
 }
 
-bool Queue::getPacket(Packet &packet)
+bool Queue::getPacket(Packet *packet)
 {
     if (static_cast<int>(m_Queue.size()) < m_BufforSize)
     {

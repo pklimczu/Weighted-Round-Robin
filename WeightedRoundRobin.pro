@@ -1,6 +1,6 @@
 QT += qml quick
 
-CONFIG += c++14
+CONFIG += c++11
 
 SOURCES += main.cpp
 HEADERS += cpp/Scheduler.h

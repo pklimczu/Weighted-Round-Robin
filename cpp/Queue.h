@@ -17,14 +17,14 @@ public:
      * @param packet - packet to be returned
      * @return - true if there is packet to be returned; otherwise false
      */
-    bool returnPacket(Packet &packet);
+    bool returnPacket(Packet *packet);
 
     /**
      * @brief getPacket - takes new packet to queue
      * @param packet - packet to be taken
      * @return - true if there is a place for a packet in queue; otherwise false
      */
-    bool getPacket(Packet &packet);
+    bool getPacket(Packet *packet);
 
     float getRatio() const { return m_Ratio; }
     std::string getName() const { return m_Name; }
@@ -56,7 +56,7 @@ private:
     std::default_random_engine m_Generator;
     std::poisson_distribution<int> m_Distribution;
 
-    std::deque<Packet> m_Queue;
+    std::deque<Packet*> m_Queue;
 
 //    std::vector<int> m_TimesOfArrivals;         // Times of arrival every single packet
     std::vector<float> m_Intervals;               // Differences between times of arrival following packets
