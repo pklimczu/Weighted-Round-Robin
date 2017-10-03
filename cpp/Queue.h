@@ -26,6 +26,7 @@ public:
      */
     bool getPacket(Packet *packet);
 
+    int getAvgPacketSize() const { return m_AvgPacketSize; }
     float getRatio() const { return m_Ratio; }
     std::string getName() const { return m_Name; }
     int getPacketsPerIteration() const { return m_NumberOfPacketsPerIteration; }

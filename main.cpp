@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    Scheduler scheduler(5,1);
+    Scheduler scheduler(50, 10000.0);
     scheduler.addQueue(new Queue("a1", 5, 10, 5, 5));
     scheduler.addQueue(new Queue("a2", 5, 100, 100, 5));
     scheduler.run();

@@ -5,7 +5,7 @@
 class Packet
 {
 public:
-    Packet(float timeOfArrival);
+    Packet(float timeOfArrival = -1.0);
     Packet(int packetSize, float timeOfArrival);
 
     int getPacketSize() const { return m_PacketSize; }

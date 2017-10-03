@@ -46,6 +46,7 @@ bool Queue::getPacket(Packet *packet)
 {
     if (static_cast<int>(m_Queue.size()) < m_BufforSize)
     {
+        packet->setPacketSize(m_AvgPacketSize);
         m_Queue.push_back(packet);
         m_NumberOfPacketsInBuffor++;
         return true;
@@ -60,7 +61,6 @@ bool Queue::getPacket(Packet *packet)
 
 void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
 {
-    std::cout << "Queue " << m_Name << ": " << packetsNumber << " per iteration." << std::endl;
     if (m_NumberOfPacketsPerIteration != packetsNumber)
     {
         m_NumberOfPacketsPerIteration = packetsNumber;
@@ -69,7 +69,6 @@ void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
 
 double Queue::generateRandomTime()
 {
-    auto comp = [](int a, int b) { return a < b; };
     float makeRoundProperly = 1000;
     return round(1.0 * SCALING_FACTOR * makeRoundProperly / static_cast<double>(m_Distribution(m_Generator))) / makeRoundProperly;
 }

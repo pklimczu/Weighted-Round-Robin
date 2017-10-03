@@ -37,7 +37,7 @@ public:
     };
 
     Scheduler();
-    Scheduler(int linkMaxThroughput, int endTime);
+    Scheduler(int linkMaxThroughput, double endTime);
 
     bool addQueue(Queue *queue);
     bool removeQueue(Queue &queue);
@@ -50,6 +50,7 @@ private:
     void _runSimulation();
     void _processPacketArrival(SimulationEventStruct &event);
     void _processPacketDeparture(SimulationEventStruct &event);
+    void _calculatePacketSendingEndTime(Packet packet, std::string queueName);
     void _prepareStatistics();
 
     double _generateTime(double lambda);
@@ -60,7 +61,8 @@ private:
                         std::vector<pSimulationEventStruct>,
                         Comparator> m_EventPriorityQueue;
     int m_LinkMaxThroughput;
-    int m_EndTime;
+    double m_EndTime;
+    int m_QueueServedPacketsCounter;
     int m_QueuesIterationCounter;
     ServerState m_ServerState;
     std::string m_ActiveQueueName;

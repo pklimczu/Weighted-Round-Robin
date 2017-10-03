@@ -7,9 +7,10 @@ double globalTime = 0;
 
 Scheduler::Scheduler() { }
 
-Scheduler::Scheduler(int linkMaxThroughput, int endTime)    :
+Scheduler::Scheduler(int linkMaxThroughput, double endTime)    :
     m_LinkMaxThroughput(linkMaxThroughput),
     m_EndTime(endTime),
+    m_QueueServedPacketsCounter(0),
     m_QueuesIterationCounter(0),
     m_ServerState(IDLE)
 {
@@ -107,6 +108,8 @@ void Scheduler::_processPacketArrival(SimulationEventStruct &event)
     auto newEvent = std::make_shared<SimulationEventStruct>(timeOfArrivalNextPacket,
                                                             event.queueName,
                                                             IncomingPacket);
+    m_EventPriorityQueue.push(newEvent);
+
     if (m_ServerState == IDLE)
     {
         _processPacketDeparture(event);
@@ -122,10 +125,66 @@ void Scheduler::_processPacketArrival(SimulationEventStruct &event)
 
 void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
 {
+    Packet packet;
 
+    if (m_ServerState == IDLE)
+    {
+        m_ServerState = WORKING;
+        packet.setPacketSize(m_QueuesMap[event.queueName]->getAvgPacketSize());
+        packet.setTimeOfArrival(event.eventTime);
+        _calculatePacketSendingEndTime(packet, event.queueName);
+        m_QueueServedPacketsCounter++;
+        m_ActiveQueueName = event.queueName;
+    }
+    else if (m_QueueServedPacketsCounter < m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration() &&
+             m_QueuesMap[m_ActiveQueueName]->returnPacket(&packet))
+    {
+        m_QueuesIterationCounter = 0;
+        _calculatePacketSendingEndTime(packet, event.queueName);
+        m_QueueServedPacketsCounter++;
+    }
+    else if (!m_QueuesMap[event.queueName]->returnPacket(&packet) ||
+             m_QueueServedPacketsCounter >= m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration())
+    {
+        m_QueuesIterationCounter++;
+        if (m_QueuesIterationCounter == (m_QueuesMap.size() + 1))
+        {
+            m_QueuesIterationCounter = 0;
+            m_ServerState = IDLE;
+        }
+        else
+        {
+            m_QueueServedPacketsCounter = 0;
+            auto itr = m_QueuesMap.find(m_ActiveQueueName);
+            if (itr == m_QueuesMap.end())
+            {
+                itr = m_QueuesMap.begin();
+            }
+            m_ActiveQueueName = (*itr).second->getName();
+            m_QueuesIterationCounter++;
+            _processPacketDeparture(event);
+        }
+    }
+}
+
+void Scheduler::_calculatePacketSendingEndTime(Packet packet, std::string queueName)
+{
+    double processingEndTime = globalTime + static_cast<double>(packet.getPacketSize()) / m_LinkMaxThroughput;
+    auto newEvent = std::make_shared<SimulationEventStruct>(processingEndTime,
+                                                            queueName,
+                                                            ProcessPacket);
+    m_EventPriorityQueue.push(newEvent);
 }
 
 void Scheduler::_prepareStatistics()
 {
-
+    for (const auto &q : m_QueuesMap)
+    {
+        std::cout << "#######################################\n";
+        std::cout << "NAME: \t" << q.second->getName() << "\n";
+        std::cout << "Number of packets in buffor: \t\t\t" << q.second->getNumberOfPacketsInBuffor() << "\n";
+        std::cout << "Number of processed packets: \t\t\t" << q.second->getNumberOfProcessedPackets() << "\n";
+        std::cout << "Number of rejected packets: \t\t\t" << q.second->getNumberOfRejectedPackets() << "\n";
+        std::cout << "Number of packets served without being in queue: \t" << q.second->getNumberOfPacketsServedWithoutBeingInQueue() << "\n";
+    }
 }
