@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
     // link max throughput, endtime
-    Scheduler scheduler(800, 3000.0);
+    Scheduler scheduler(180000, 30000.0);
     // name, lambda, avgPacketSize, weight, buffor size
     scheduler.addQueue(new Queue("K1", 10, 11000, 100, 10));
     scheduler.addQueue(new Queue("K2", 10, 11000, 200, 10));

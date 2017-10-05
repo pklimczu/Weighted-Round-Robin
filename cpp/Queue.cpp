@@ -37,7 +37,6 @@ bool Queue::returnPacket(Packet &packet)
         m_Intervals.push_back(globalTime - packet.getTimeOfArrival());
         m_NumberOfPacketsInBuffor--;
         m_NumberOfProcessedPackets++;
-        std::cout << "Returned packet of size: " << packet.getPacketSize() << "\n";
         return true;
     }
     return false;

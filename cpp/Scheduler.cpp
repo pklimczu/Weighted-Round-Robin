@@ -143,7 +143,7 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
         _calculatePacketSendingEndTime(packet, event.queueName);
         m_QueueServedPacketsCounter++;
     }
-    else if (!m_QueuesMap[event.queueName]->returnPacket(packet) ||
+    else if (!m_QueuesMap[m_ActiveQueueName]->returnPacket(packet) ||
              m_QueueServedPacketsCounter >= m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration())
     {
         m_QueuesIterationCounter++;
@@ -161,9 +161,7 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
             {
                 itr = m_QueuesMap.begin();
             }
-//            std::cout << "Active queue name changed to: " << m_ActiveQueueName << "\n";
             m_ActiveQueueName = (*itr).second->getName();
-            m_QueuesIterationCounter++;
             _processPacketDeparture(event);
         }
     }
