@@ -137,13 +137,13 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
         m_ActiveQueueName = event.queueName;
     }
     else if (m_QueueServedPacketsCounter < m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration() &&
-             m_QueuesMap[m_ActiveQueueName]->returnPacket(&packet))
+             m_QueuesMap[m_ActiveQueueName]->returnPacket(packet))
     {
         m_QueuesIterationCounter = 0;
         _calculatePacketSendingEndTime(packet, event.queueName);
         m_QueueServedPacketsCounter++;
     }
-    else if (!m_QueuesMap[event.queueName]->returnPacket(&packet) ||
+    else if (!m_QueuesMap[event.queueName]->returnPacket(packet) ||
              m_QueueServedPacketsCounter >= m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration())
     {
         m_QueuesIterationCounter++;
@@ -156,10 +156,12 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
         {
             m_QueueServedPacketsCounter = 0;
             auto itr = m_QueuesMap.find(m_ActiveQueueName);
+            itr++;
             if (itr == m_QueuesMap.end())
             {
                 itr = m_QueuesMap.begin();
             }
+//            std::cout << "Active queue name changed to: " << m_ActiveQueueName << "\n";
             m_ActiveQueueName = (*itr).second->getName();
             m_QueuesIterationCounter++;
             _processPacketDeparture(event);
@@ -167,7 +169,7 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
     }
 }
 
-void Scheduler::_calculatePacketSendingEndTime(Packet packet, std::string queueName)
+void Scheduler::_calculatePacketSendingEndTime(Packet &packet, std::string queueName)
 {
     double processingEndTime = globalTime + static_cast<double>(packet.getPacketSize()) / m_LinkMaxThroughput;
     auto newEvent = std::make_shared<SimulationEventStruct>(processingEndTime,

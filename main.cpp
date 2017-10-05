@@ -4,9 +4,17 @@
 
 int main(int argc, char *argv[])
 {
-    Scheduler scheduler(50, 10000.0);
-    scheduler.addQueue(new Queue("a1", 5, 10, 5, 5));
-    scheduler.addQueue(new Queue("a2", 5, 100, 100, 5));
+    // link max throughput, endtime
+    Scheduler scheduler(800, 3000.0);
+    // name, lambda, avgPacketSize, weight, buffor size
+    scheduler.addQueue(new Queue("K1", 10, 11000, 100, 10));
+    scheduler.addQueue(new Queue("K2", 10, 11000, 200, 10));
+    scheduler.addQueue(new Queue("K3", 10, 11000, 100, 10));
+//    scheduler.addQueue(new Queue("K4", 100, 11000, 100, 1000000));
+//    scheduler.addQueue(new Queue("K5", 100, 11000, 100, 1000000));
+//    scheduler.addQueue(new Queue("K6", 100, 11000, 100, 1000000));
+//        scheduler.addQueue(new Queue("K7", 100, 11000, 100, 1000000));
+//            scheduler.addQueue(new Queue("K8", 100, 11000, 100, 1000000));
     scheduler.run();
 
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

@@ -50,7 +50,7 @@ private:
     void _runSimulation();
     void _processPacketArrival(SimulationEventStruct &event);
     void _processPacketDeparture(SimulationEventStruct &event);
-    void _calculatePacketSendingEndTime(Packet packet, std::string queueName);
+    void _calculatePacketSendingEndTime(Packet &packet, std::string queueName);
     void _prepareStatistics();
 
     double _generateTime(double lambda);

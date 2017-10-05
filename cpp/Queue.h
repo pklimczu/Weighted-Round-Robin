@@ -17,7 +17,7 @@ public:
      * @param packet - packet to be returned
      * @return - true if there is packet to be returned; otherwise false
      */
-    bool returnPacket(Packet *packet);
+    bool returnPacket(Packet &packet);
 
     /**
      * @brief getPacket - takes new packet to queue

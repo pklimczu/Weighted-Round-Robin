@@ -28,15 +28,16 @@ Queue::Queue(std::string name, int lambda, int avgPacketSize, int weight, int bu
     m_Ratio = static_cast<float>(m_Weight)/static_cast<float>(m_AvgPacketSize);
 }
 
-bool Queue::returnPacket(Packet *packet)
+bool Queue::returnPacket(Packet &packet)
 {
     if (m_Queue.size() > 0)
     {
-        packet = m_Queue.front();
+        packet = *(m_Queue.front());
         m_Queue.pop_front();
-        m_Intervals.push_back(globalTime - packet->getTimeOfArrival());
+        m_Intervals.push_back(globalTime - packet.getTimeOfArrival());
         m_NumberOfPacketsInBuffor--;
         m_NumberOfProcessedPackets++;
+        std::cout << "Returned packet of size: " << packet.getPacketSize() << "\n";
         return true;
     }
     return false;
@@ -61,6 +62,7 @@ bool Queue::getPacket(Packet *packet)
 
 void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
 {
+    std::cout << m_Name << ": " << packetsNumber << std::endl;
     if (m_NumberOfPacketsPerIteration != packetsNumber)
     {
         m_NumberOfPacketsPerIteration = packetsNumber;
