@@ -2,8 +2,10 @@
     <qresource prefix="/">
         <file>qml/CustomInput.qml</file>
         <file>qml/CustomLabel.qml</file>
-        <file>qml/CustomTableView.qml</file>
         <file>qml/main.qml</file>
         <file>qml/RectDivider.qml</file>
+        <file>qml/AddQueueButton.qml</file>
+        <file>qml/Header.qml</file>
+        <file>qml/QueueParameter.qml</file>
     </qresource>
 </RCC>

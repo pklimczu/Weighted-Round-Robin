@@ -9,6 +9,8 @@ ApplicationWindow {
     title: qsTr("Hello World")
     color: "#f9f9f9"
 
+    header: Header {}
+
     /* Basic parameters area */
 
     CustomLabel {
@@ -62,7 +64,7 @@ ApplicationWindow {
             }
 
             CustomLabel {
-                text: "[b/s]"
+                text: "[kb/s]"
                 Layout.preferredWidth: 0.1 * parent.width
             }
 
@@ -98,7 +100,7 @@ ApplicationWindow {
 
     RectDivider {
         id: rectDivider2
-        width: 340
+        width: 450
         anchors {
             top: basicParametersCustomLabel.bottom
             left: basicParametersCustomLabel.right
@@ -107,13 +109,37 @@ ApplicationWindow {
         }
     }
 
-    CustomTableView {
-        width: 360
-        height: 400
+    QueueParameter {
+        id: queueParameter
         anchors {
             top: rectDivider2.bottom
-            left: rectDivider2.left
-            topMargin: 10
+            left: basicParametersCustomLabel.right
+            leftMargin: 50
+            topMargin: 5
+        }
+    }
+
+    /* Queues list */
+    CustomLabel {
+        id: queuesListCustomLabel
+        text: qsTr("Queues' list")
+        font.weight: Font.DemiBold
+        anchors {
+            top: queueParameter.bottom
+            left: parent.left
+            margins: 10
+            topMargin: -10
+        }
+    }
+
+    RectDivider {
+        id: rectDivider3
+        width: 750
+        anchors {
+            top: queuesListCustomLabel.bottom
+            left: parent.left
+            leftMargin: 10
+            topMargin: 5
         }
     }
 }
