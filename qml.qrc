@@ -4,8 +4,14 @@
         <file>qml/CustomLabel.qml</file>
         <file>qml/main.qml</file>
         <file>qml/RectDivider.qml</file>
-        <file>qml/AddQueueButton.qml</file>
         <file>qml/Header.qml</file>
         <file>qml/QueueParameter.qml</file>
+        <file>qml/CustomButton.qml</file>
+        <file>qml/QueuesList.qml</file>
+        <file>qml/QueuesListDelegate.qml</file>
+        <file>qml/HeaderTextItem.qml</file>
+        <file>qml/RemoveIcon.qml</file>
+        <file>qml/ListTextItem.qml</file>
+        <file>qml/QuestionIcon.qml</file>
     </qresource>
 </RCC>

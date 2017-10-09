@@ -1,7 +1,10 @@
 import QtQuick 2.0
 
 Rectangle {
-    id: rectangle
+    id: mainRect
+    property alias textLabel: text.text
+    signal clicked()
+
     width: 100
     height: 50
     color: "#e5e5e5"
@@ -10,7 +13,7 @@ Rectangle {
     Text {
         id: text
         anchors.centerIn: parent
-        text: qsTr("Add")
+        text: qsTr("none")
         font.pixelSize: 18
         color: "#474747"
     }
@@ -19,10 +22,10 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         onClicked: {
-            console.log("TEST")
+            mainRect.clicked()
         }
         onPressedChanged: {
-            rectangle.color = mouseArea.pressed ? "#474747" : "#e5e5e5"
+            mainRect.color = mouseArea.pressed ? "#474747" : "#e5e5e5"
             text.color = mouseArea.pressed ? "#e5e5e5" : "#474747"
         }
     }

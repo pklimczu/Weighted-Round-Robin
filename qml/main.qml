@@ -128,7 +128,7 @@ ApplicationWindow {
             top: queueParameter.bottom
             left: parent.left
             margins: 10
-            topMargin: -10
+            topMargin: -25
         }
     }
 
@@ -140,6 +140,29 @@ ApplicationWindow {
             left: parent.left
             leftMargin: 10
             topMargin: 5
+        }
+    }
+
+    QueuesList {
+        id: queuesList
+        width: 750
+        height: 307
+        anchors {
+            top: rectDivider3.bottom
+            left: parent.left
+            margins: 10
+            topMargin: 2
+        }
+    }
+
+    CustomButton {
+        id: test
+        height: 40
+        textLabel: qsTr("Start")
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            margins: 20
         }
     }
 }

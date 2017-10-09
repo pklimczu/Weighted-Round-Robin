@@ -16,11 +16,21 @@ Rectangle {
     }
     CustomInput {
         id: lambdaInput
-        width: 120
+        width: 100
         height: 23
         anchors {
             left: lambdaLabel.right
             leftMargin: 20
+            top: parent.top
+        }
+    }
+
+    CustomLabel {
+        id: lambdaUnit
+        text: "[1/s]"
+        anchors {
+            left: lambdaInput.right
+            leftMargin: 5
             top: parent.top
         }
     }
@@ -35,8 +45,18 @@ Rectangle {
     }
     CustomInput {
         id: avgSizeInput
-        width: 120
+        width: 100
         height: 23
+        anchors {
+            right: avgSizeUnit.left
+            rightMargin: 5
+            top: parent.top
+        }
+    }
+
+    CustomLabel {
+        id: avgSizeUnit
+        text: "[b]"
         anchors {
             right: parent.right
             top: parent.top
@@ -52,13 +72,32 @@ Rectangle {
             topMargin: 10
         }
     }
+
     CustomInput {
         id: weightInput
-        width: 120
+        width: 100
         height: 23
         anchors {
             left: lambdaInput.left
             top: weightLabel.top
+        }
+    }
+
+    QuestionIcon {
+        id: weightQuestion
+        anchors {
+            top: weightLabel.top
+            left: weightInput.right
+            leftMargin: 5
+        }
+    }
+
+    QuestionIcon {
+        id: bufforSizeLabel
+        anchors {
+            top: weightLabel.top
+            left: bufforSizeInput.right
+            leftMargin: 5
         }
     }
 
@@ -69,13 +108,23 @@ Rectangle {
             top: weightLabel.top
         }
     }
+
     CustomInput {
         id: bufforSizeInput
-        width: 120
+        width: 100
         height: 23
         anchors {
             top: weightLabel.top
-            right: parent.right
+            right: avgSizeInput.right
+        }
+    }
+
+    QuestionIcon {
+        id: bufforSizeQuestion
+        anchors {
+            top: weightLabel.top
+            left: bufforSizeInput.right
+            leftMargin: 5
         }
     }
 
@@ -102,11 +151,16 @@ Rectangle {
         }
     }
 
-    AddQueueButton {
+    CustomButton {
         id: addQueueButton
+        textLabel: qsTr("Add")
         anchors {
             right: parent.right
             top: queuesNameLabel.top
+        }
+        onClicked: {
+            console.log(queuesList.children[1].model.append({"name":"Another one"}))
+
         }
     }
 }
