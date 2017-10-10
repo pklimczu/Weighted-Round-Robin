@@ -85,18 +85,10 @@ Rectangle {
 
     QuestionIcon {
         id: weightQuestion
+        textInCloud: qsTr("Importance of that queue")
         anchors {
             top: weightLabel.top
             left: weightInput.right
-            leftMargin: 5
-        }
-    }
-
-    QuestionIcon {
-        id: bufforSizeLabel
-        anchors {
-            top: weightLabel.top
-            left: bufforSizeInput.right
             leftMargin: 5
         }
     }
@@ -121,6 +113,7 @@ Rectangle {
 
     QuestionIcon {
         id: bufforSizeQuestion
+        textInCloud: qsTr("Number of packets")
         anchors {
             top: weightLabel.top
             left: bufforSizeInput.right
@@ -159,8 +152,11 @@ Rectangle {
             top: queuesNameLabel.top
         }
         onClicked: {
-            console.log(queuesList.children[1].model.append({"name":"Another one"}))
-
+            var queueArguments = [queuesNameInput.textValue, lambdaInput.textValue,
+                                  avgSizeInput.textValue, weightInput.textValue,
+                                  bufforSizeInput.textValue];
+            console.log(queueArguments)
+            simulationPresenter.addQueue(queueArguments)
         }
     }
 }

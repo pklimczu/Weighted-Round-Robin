@@ -1,10 +1,7 @@
 import QtQuick 2.7
-import SimulationPresenter 1.0
 
 Item {
     id: queuesListItem
-
-    property QtObject simulationPresenter: SimulationPresenter {}
 
     /* HEADER */
 
@@ -134,6 +131,7 @@ Item {
         }
 
         model: simulationPresenter.queueList
+
             /*ListModel {
             ListElement {
                 name: "First queue"

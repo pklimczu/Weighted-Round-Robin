@@ -24,5 +24,6 @@ Rectangle {
         validator: IntValidator { bottom: 0; top: 1000000000 }
         selectByMouse: true
         activeFocusOnTab: true
+        clip: true
     }
 }

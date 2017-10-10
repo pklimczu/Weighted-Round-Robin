@@ -1,6 +1,6 @@
 #include "QueueItem.h"
 
-QueueItem::QueueItem(QObject *parent)
+QueueItem::QueueItem()
 {
 
 }
@@ -11,6 +11,16 @@ QueueItem::QueueItem(QString name, QString lambda, QString avgSize, QString weig
     m_AvgSize(avgSize),
     m_Weight(weight),
     m_BufforSize(bufforSize)
+{
+
+}
+
+QueueItem::QueueItem(QString name, int lambda, int avgSize, int weight, int bufforSize) :
+    m_Name(name),
+    m_Lambda(QString::number(lambda)),
+    m_AvgSize(QString::number(avgSize)),
+    m_Weight(QString::number(weight)),
+    m_BufforSize(QString::number(bufforSize))
 {
 
 }
