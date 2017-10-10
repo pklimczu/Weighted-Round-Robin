@@ -160,13 +160,16 @@ ApplicationWindow {
     }
 
     CustomButton {
-        id: test
+        id: startButton
         height: 40
         textLabel: qsTr("Start")
         anchors {
             bottom: parent.bottom
             left: parent.left
             margins: 20
+        }
+        onClicked: {
+            console.log("START clicked")
         }
     }
 }

@@ -5,11 +5,22 @@ QueueModel::QueueModel(QObject *parent)
 {
 }
 
-void QueueModel::addQueueItem(const QueueItem &queueItem)
+void QueueModel::addQueueItem(QueueItem *queueItem)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_QueueItems << queueItem;
+    m_QueueItems.append(queueItem);
     endInsertRows();
+}
+
+void QueueModel::removeQueueItem(int index)
+{
+    QueueItem *queueItem = m_QueueItems.at(index);
+
+    beginRemoveRows(QModelIndex(), index, index);
+    m_QueueItems.removeAt(index);
+    endRemoveRows();
+
+    delete queueItem;
 }
 
 int QueueModel::rowCount(const QModelIndex &parent) const
@@ -23,17 +34,17 @@ QVariant QueueModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_QueueItems.count())
         return QVariant();
 
-    const QueueItem &queueItem = m_QueueItems[index.row()];
+    const QueueItem* queueItem = m_QueueItems[index.row()];
     if (role == NameRole)
-        return queueItem.name();
+        return queueItem->name();
     else if (role == LambdaRole)
-        return queueItem.lambda();
+        return queueItem->lambda();
     else if (role == AvgSizeRole)
-        return queueItem.avgSize();
+        return queueItem->avgSize();
     else if (role == WeightRole)
-        return queueItem.weight();
+        return queueItem->weight();
     else if (role == BufforSizeRole)
-        return queueItem.bufforSize();
+        return queueItem->bufforSize();
 
     return QVariant();
 }

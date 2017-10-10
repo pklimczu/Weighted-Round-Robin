@@ -155,7 +155,6 @@ Rectangle {
             var queueArguments = [queuesNameInput.textValue, lambdaInput.textValue,
                                   avgSizeInput.textValue, weightInput.textValue,
                                   bufforSizeInput.textValue];
-            console.log(queueArguments)
             simulationPresenter.addQueue(queueArguments)
         }
     }

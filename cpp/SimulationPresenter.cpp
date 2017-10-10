@@ -23,13 +23,18 @@ void SimulationPresenter::addQueue(QVariantList queueArguments)
     if (canBeParse)
     {
         QueueItem *queueItem = new QueueItem(name, lambda, avgSize, weight, bufforSize);
-        m_ListOfQueuesItems->addQueueItem(*queueItem);
+        m_ListOfQueuesItems->addQueueItem(queueItem);
     }
     else
     {
         // TODO: ADD DISPLAYING INFO ABOUT ERRORS
         qDebug() << m_ErrorsList;
     }
+}
+
+void SimulationPresenter::removeQueue(int index)
+{
+    m_ListOfQueuesItems->removeQueueItem(index);
 }
 
 bool SimulationPresenter::_parseName(QVariant &variant, QString &returnString)

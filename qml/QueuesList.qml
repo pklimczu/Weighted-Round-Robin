@@ -126,54 +126,12 @@ Item {
             bufforSizeTextRealWidth: bufforSizeTextItem.realWidth
 
             onClicked: {
-                console.log(delegateItem)
+                var index = listView.indexAt(position.x, position.y)
+                simulationPresenter.removeQueue(index)
             }
         }
 
         model: simulationPresenter.queueList
-
-            /*ListModel {
-            ListElement {
-                name: "First queue"
-                lambda: "230"
-                avgSize: "200"
-                weight: "200"
-                bufforSize: "50"
-            }
-
-            ListElement {
-                name: "Second queue"
-                lambda: "230"
-                avgSize: "200"
-                weight: "200"
-                bufforSize: "50"
-            }
-
-            ListElement {
-                name: "My favorite queue"
-                lambda: "230"
-                avgSize: "200"
-                weight: "200"
-                bufforSize: "50"
-            }
-
-            ListElement {
-                name: "Some long string to check how does it work"
-                lambda: "230"
-                avgSize: "200"
-                weight: "200"
-                bufforSize: "50"
-            }
-        }*/
-
-//        MouseArea {
-//            anchors.fill: parent
-//            preventStealing: true
-//            propagateComposedEvents: true
-//            onClicked: {
-//                console.log(mouseX, mouseY)
-//            }
-//        }
     }
 
     /* FOOTER */

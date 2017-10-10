@@ -16,8 +16,8 @@ public:
 
     QueueModel(QObject *parent = 0);
 
-    void addQueueItem(const QueueItem &queueItem);
-    bool removeQueueItem(const QueueItem &queueItem);
+    void addQueueItem(QueueItem *queueItem);
+    void removeQueueItem(int index);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -26,7 +26,7 @@ protected:
     QHash<int, QByteArray> roleNames() const;
 
 private:
-    QList<QueueItem> m_QueueItems;
+    QList<QueueItem*> m_QueueItems;
 };
 
 #endif // QUEUEMODEL_H

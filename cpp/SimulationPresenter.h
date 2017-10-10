@@ -20,6 +20,7 @@ public:
     Q_SIGNAL void queueListChanged();
 
     Q_INVOKABLE void addQueue(QVariantList queueArguments);
+    Q_INVOKABLE void removeQueue(int index);
 
 private:
     bool _parseName(QVariant &variant, QString &returnString);

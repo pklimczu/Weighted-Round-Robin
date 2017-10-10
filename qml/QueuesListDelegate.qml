@@ -8,7 +8,7 @@ Rectangle {
     property double weightTextRealWidth: 0
     property double bufforSizeTextRealWidth: 0
 
-    signal clicked(var delegateItem)
+    signal clicked(var position)
 
     width: 750
     height: 45
@@ -123,7 +123,7 @@ Rectangle {
             verticalCenter: parent.verticalCenter
         }
         onClicked: {
-            mainRectangle.clicked(parent)
+            mainRectangle.clicked(position)
         }
     }
 

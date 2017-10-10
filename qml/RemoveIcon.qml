@@ -1,10 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.7
 
 Item {
     id: mainItem
     width: 25
     height: 25
-    signal clicked()
+    signal clicked(var position)
 
     Rectangle {
         id: r1
@@ -29,7 +29,8 @@ Item {
         anchors.fill: parent
         propagateComposedEvents: true
         onClicked: {
-            mainItem.clicked()
+            var mousePosition = mapToItem(listView, mouseX, mouseY)
+            mainItem.clicked(mousePosition)
         }
         onPressedChanged: {
             r1.color = mouseArea.pressed ? "#636363" : "#efefef"
