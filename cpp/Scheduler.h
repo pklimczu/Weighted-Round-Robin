@@ -5,6 +5,7 @@
 #include <queue>
 #include <memory>
 #include <functional>
+#include <QStringList>
 
 class Scheduler
 {
@@ -43,6 +44,7 @@ public:
     bool removeQueue(Queue &queue);
 
     void run();
+    void run(QStringList &resultList);
 
 private:
     void _normalizeQueuesWeights();
@@ -52,6 +54,7 @@ private:
     void _processPacketDeparture(SimulationEventStruct &event);
     void _calculatePacketSendingEndTime(Packet &packet, std::string queueName);
     void _prepareStatistics();
+    void _getStatistics(QStringList &resultList);
 
     double _generateTime(double lambda);
 

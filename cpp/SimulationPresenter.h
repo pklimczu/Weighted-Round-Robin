@@ -13,6 +13,7 @@ class SimulationPresenter : public QObject
 
     Q_PROPERTY(QueueModel* queueList READ queueList NOTIFY queueListChanged)
     Q_PROPERTY(bool simulationInProgress READ simulationInProgress NOTIFY simulationInProgressChanged)
+    Q_PROPERTY(QString resultList READ resultList NOTIFY resultListChanged)
 
 public:
     SimulationPresenter(QObject *parent = 0);
@@ -23,6 +24,9 @@ public:
 
     bool simulationInProgress() const { return m_IsSimulationInProgress; }
     Q_SIGNAL void simulationInProgressChanged();
+
+    QString resultList() const { return m_ResultsList.join("\n"); }
+    Q_SIGNAL void resultListChanged();
 
     Q_INVOKABLE void addQueue(QVariantList queueArguments);
     Q_INVOKABLE void removeQueue(int index);
@@ -41,6 +45,7 @@ private:
     QueueModel *m_ListOfQueuesItems;
     QList<QString> m_ErrorsList;
     bool m_IsSimulationInProgress;
+    QStringList m_ResultsList;
 };
 
 #endif // SIMULATIONPRESENTER_H

@@ -10,7 +10,7 @@ ApplicationWindow {
     visible: true
     width: 800
     height: 630
-    title: qsTr("Hello World")
+    title: qsTr("Weighted Round Robint - Event Simulation")
     color: "#f9f9f9"
 
     header: Header {}
@@ -30,7 +30,7 @@ ApplicationWindow {
         }
 
         Page {
-            title: "RESULTS"
+            ResultsView { }
         }
     }
 
@@ -39,6 +39,10 @@ ApplicationWindow {
         currentIndex: swipeView.currentIndex
         anchors.margins: 0
         contentHeight: 30
+
+        Component.onCompleted: {
+            tabBar.currentIndex = 1
+        }
 
         CustomTabButton {
             textValue: qsTr("How does it work?")
@@ -56,7 +60,7 @@ ApplicationWindow {
             textValue: qsTr("Results")
             orderNumber: 2
             currentIndex: tabBar.currentIndex
-            enabled: false
+//            enabled: false
         }
     }
 

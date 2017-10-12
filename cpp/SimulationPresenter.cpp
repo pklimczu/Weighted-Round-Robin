@@ -50,8 +50,9 @@ void SimulationPresenter::startSimulation(int throughput, double duration)
                                       q->weightInt(),
                                       q->bufforSizeInt()));
     }
-    scheduler->run();
+    scheduler->run(m_ResultsList);
     _changeSimulationState(false);
+    Q_EMIT resultListChanged();
 }
 
 bool SimulationPresenter::_parseName(QVariant &variant, QString &returnString)

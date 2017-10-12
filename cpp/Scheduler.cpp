@@ -2,6 +2,7 @@
 #include <limits>
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 double globalTime = 0;
 
@@ -35,6 +36,16 @@ void Scheduler::run()
     _normalizeQueuesWeights();
     _doZeroIteration();
     _runSimulation();
+    _prepareStatistics();
+}
+
+void Scheduler::run(QStringList &resultList)
+{
+    _normalizeQueuesWeights();
+    _doZeroIteration();
+    _runSimulation();
+    _getStatistics(resultList);
+    m_QueuesMap.clear();
 }
 
 void Scheduler::_normalizeQueuesWeights()
@@ -100,7 +111,6 @@ void Scheduler::_runSimulation()
                 break;
         }
     }
-    _prepareStatistics();
 }
 
 void Scheduler::_processPacketArrival(SimulationEventStruct &event)
@@ -187,5 +197,22 @@ void Scheduler::_prepareStatistics()
         std::cout << "Number of processed packets: \t\t\t" << q.second->getNumberOfProcessedPackets() << "\n";
         std::cout << "Number of rejected packets: \t\t\t" << q.second->getNumberOfRejectedPackets() << "\n";
         std::cout << "Number of packets served without being in queue: \t" << q.second->getNumberOfPacketsServedWithoutBeingInQueue() << "\n";
+    }
+}
+
+void Scheduler::_getStatistics(QStringList &resultList)
+{
+    resultList.clear();
+    std::stringstream result;
+    for (const auto &q : m_QueuesMap)
+    {
+        result << "#######################################\n";
+        result << "NAME: \t" << q.second->getName() << "\n";
+        result << "Number of packets in buffor: \t\t\t" << q.second->getNumberOfPacketsInBuffor() << "\n";
+        result << "Number of processed packets: \t\t\t" << q.second->getNumberOfProcessedPackets() << "\n";
+        result << "Number of rejected packets: \t\t\t" << q.second->getNumberOfRejectedPackets() << "\n";
+        result << "Number of packets served without being in queue: \t" << q.second->getNumberOfPacketsServedWithoutBeingInQueue() << "\n";
+        resultList.append(QString::fromStdString(result.str()));
+        result.clear();
     }
 }
