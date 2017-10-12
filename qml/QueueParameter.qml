@@ -18,6 +18,7 @@ Rectangle {
         id: lambdaInput
         width: 100
         height: 23
+        textValue: "100"
         anchors {
             left: lambdaLabel.right
             leftMargin: 20
@@ -47,6 +48,7 @@ Rectangle {
         id: avgSizeInput
         width: 100
         height: 23
+        textValue: "2400"
         anchors {
             right: avgSizeUnit.left
             rightMargin: 5
@@ -77,6 +79,7 @@ Rectangle {
         id: weightInput
         width: 100
         height: 23
+        textValue: "100"
         anchors {
             left: lambdaInput.left
             top: weightLabel.top
@@ -105,6 +108,7 @@ Rectangle {
         id: bufforSizeInput
         width: 100
         height: 23
+        textValue: "100"
         anchors {
             top: weightLabel.top
             right: avgSizeInput.right

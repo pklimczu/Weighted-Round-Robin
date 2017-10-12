@@ -13,5 +13,8 @@
         <file>qml/RemoveIcon.qml</file>
         <file>qml/ListTextItem.qml</file>
         <file>qml/QuestionIcon.qml</file>
+        <file>qml/WaitingLayer.qml</file>
+        <file>qml/MainView.qml</file>
+        <file>qml/CustomTabButton.qml</file>
     </qresource>
 </RCC>

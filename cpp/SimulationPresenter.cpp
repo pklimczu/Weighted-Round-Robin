@@ -1,6 +1,7 @@
 #include "SimulationPresenter.h"
 
-SimulationPresenter::SimulationPresenter(QObject *parent)
+SimulationPresenter::SimulationPresenter(QObject *parent)   :
+    m_IsSimulationInProgress(false)
 {
     m_ListOfQueuesItems = new QueueModel(this);
 }
@@ -35,6 +36,22 @@ void SimulationPresenter::addQueue(QVariantList queueArguments)
 void SimulationPresenter::removeQueue(int index)
 {
     m_ListOfQueuesItems->removeQueueItem(index);
+}
+
+void SimulationPresenter::startSimulation(int throughput, double duration)
+{
+    _changeSimulationState(true);
+    Scheduler *scheduler = new Scheduler(throughput, duration);
+    for (const QueueItem *q : m_ListOfQueuesItems->getListOfItems())
+    {
+        scheduler->addQueue(new Queue(q->name().toStdString(),
+                                      q->lambdaInt(),
+                                      q->avgSizeInt(),
+                                      q->weightInt(),
+                                      q->bufforSizeInt()));
+    }
+    scheduler->run();
+    _changeSimulationState(false);
 }
 
 bool SimulationPresenter::_parseName(QVariant &variant, QString &returnString)
@@ -121,6 +138,12 @@ bool SimulationPresenter::_parseBufforSize(QVariant &variant, int &returnBufforS
         m_ErrorsList.append("Given buffor size value cannot be converted to integer value!");
     }
     return isBufforSize;
+}
+
+void SimulationPresenter::_changeSimulationState(bool newState)
+{
+    m_IsSimulationInProgress = newState;
+    Q_EMIT simulationInProgressChanged();
 }
 
 

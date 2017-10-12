@@ -22,6 +22,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    QList<QueueItem*> getListOfItems() const { return m_QueueItems; }
+
 protected:
     QHash<int, QByteArray> roleNames() const;
 

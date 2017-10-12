@@ -81,6 +81,7 @@ void Scheduler::_runSimulation()
 {
     while (globalTime < m_EndTime)
     {
+        std::cout << "Current time: " << globalTime << "\n";
         if (m_EventPriorityQueue.empty())
             break;
         auto event = m_EventPriorityQueue.top();
