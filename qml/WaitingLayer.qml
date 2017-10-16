@@ -4,7 +4,6 @@ Rectangle {
     id: mainRect
     anchors.fill: parent
     color: "white"
-    opacity: 0.6
 
     Text {
         anchors.centerIn: parent

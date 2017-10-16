@@ -34,6 +34,40 @@ ApplicationWindow {
         }
     }
 
+    Rectangle {
+        id: errorRect
+        width: parent.width
+        height: 50
+        color: "#f73b3b"
+        opacity: simulationPresenter.showErrors ? 0.85 : 0.0
+        anchors {
+            centerIn: parent
+        }
+
+        Text {
+            anchors.centerIn: parent
+            text: simulationPresenter.listOfErrors
+        }
+
+        Text {
+            anchors {
+                right: parent.right
+                top: parent.top
+                margins: 5
+                rightMargin: 10
+            }
+            text: "X"
+            font.pixelSize: 15
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    simulationPresenter.showErrors = false
+                }
+            }
+        }
+    }
+
     footer: TabBar {
         id: tabBar
         currentIndex: swipeView.currentIndex
@@ -63,5 +97,4 @@ ApplicationWindow {
 //            enabled: false
         }
     }
-
 }

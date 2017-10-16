@@ -1,7 +1,14 @@
 #include "SimulationPresenter.h"
+#include <memory>
+#include <iostream>
+#include <QDateTime>
+#include <QFile>
+#include <QTextStream>
+#include "Scheduler.h"
 
 SimulationPresenter::SimulationPresenter(QObject *parent)   :
     m_IsSimulationInProgress(false)
+  , m_ShowErrors(false)
 {
     m_ListOfQueuesItems = new QueueModel(this);
 }
@@ -9,6 +16,20 @@ SimulationPresenter::SimulationPresenter(QObject *parent)   :
 SimulationPresenter::~SimulationPresenter()
 {
     delete m_ListOfQueuesItems;
+}
+
+void SimulationPresenter::setShowErrors(bool newValue)
+{
+    if (newValue != m_ShowErrors)
+    {
+        m_ShowErrors = newValue;
+        Q_EMIT showErrorsChanged();
+        Q_EMIT listOfErrorsChanged();
+        if (m_ShowErrors == false)
+        {
+            m_ErrorsList.clear();
+        }
+    }
 }
 
 void SimulationPresenter::addQueue(QVariantList queueArguments)
@@ -25,11 +46,12 @@ void SimulationPresenter::addQueue(QVariantList queueArguments)
     {
         QueueItem *queueItem = new QueueItem(name, lambda, avgSize, weight, bufforSize);
         m_ListOfQueuesItems->addQueueItem(queueItem);
+        setShowErrors(false);
     }
     else
     {
-        // TODO: ADD DISPLAYING INFO ABOUT ERRORS
-        qDebug() << m_ErrorsList;
+        m_ErrorsList.push_front("Oops, something went wrong - queue cannot be added!");
+        setShowErrors(true);
     }
 }
 
@@ -40,19 +62,51 @@ void SimulationPresenter::removeQueue(int index)
 
 void SimulationPresenter::startSimulation(int throughput, double duration)
 {
+    std::list<std::unique_ptr<ResultStruct>> stdListOfResults;
     _changeSimulationState(true);
     Scheduler *scheduler = new Scheduler(throughput, duration);
     for (const QueueItem *q : m_ListOfQueuesItems->getListOfItems())
     {
-        scheduler->addQueue(new Queue(q->name().toStdString(),
+        /* In order to eliminate problem with queues named the same */
+        std::string suffix = std::to_string(rand()%1000);
+        scheduler->addQueue(new Queue(q->name().toStdString() + suffix,
                                       q->lambdaInt(),
                                       q->avgSizeInt(),
                                       q->weightInt(),
                                       q->bufforSizeInt()));
     }
-    scheduler->run(m_ResultsList);
+    scheduler->run(stdListOfResults);
     _changeSimulationState(false);
-    Q_EMIT resultListChanged();
+
+    _prepareResults(stdListOfResults);
+}
+
+void SimulationPresenter::saveToFile()
+{
+    QDateTime time(QDateTime::currentDateTime());
+    QString fileName = "savedResult" + time.toString("yy-mm-dd_hh-mm-ss-zzz") + ".txt";
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        m_ErrorsList.append("File not saved correctly!");
+        setShowErrors(true);
+    }
+
+    QTextStream out(&file);
+    ResultItem *tempResultItem;
+
+    for (auto *q : m_ResultsList)
+    {
+        tempResultItem = dynamic_cast<ResultItem*>(q);
+        out << "########################################\n";
+        out << "Queue name: " << tempResultItem->name() << "\n";
+        out << "Remains in buffor: " << tempResultItem->inBuffor() << "\n";
+        out << "Processed: " << tempResultItem->processed() << "\n";
+        out << "Rejected: " << tempResultItem->rejected() << "\n";
+        out << "Without in queue: " << tempResultItem->withoutInQueue() << "\n";
+    }
+    out << "########################################\n";
+    file.close();
 }
 
 bool SimulationPresenter::_parseName(QVariant &variant, QString &returnString)
@@ -147,4 +201,22 @@ void SimulationPresenter::_changeSimulationState(bool newState)
     Q_EMIT simulationInProgressChanged();
 }
 
+void SimulationPresenter::_prepareResults(std::list<std::unique_ptr<ResultStruct> > &listOfResult)
+{
+    for (auto *rl : m_ResultsList)
+    {
+        delete rl;
+    }
 
+    m_ResultsList.clear();
+    for (const auto &q : listOfResult)
+    {
+        ResultItem *resultItem = new ResultItem(q.get()->name,
+                                                q.get()->packetsInBuffor,
+                                                q.get()->proccessedPackets,
+                                                q.get()->rejectedPackets,
+                                                q.get()->servedWithoutQueue);
+        m_ResultsList.append(resultItem);
+    }
+    Q_EMIT resultListChanged();
+}

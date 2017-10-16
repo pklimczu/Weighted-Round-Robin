@@ -68,10 +68,12 @@ Rectangle {
         }
 
         TableViewColumn {
-            role: "withoutQueue"
+            role: "withoutInQueue"
             title: qsTr("#without being in queue")
             width: 149
         }
+
+        model: simulationPresenter.resultList
     }
 
     CustomButton {
@@ -86,7 +88,7 @@ Rectangle {
             bottomMargin: 50
         }
         onClicked: {
-            console.log("SAVE RESULTS BUTTON CLICKED!")
+            simulationPresenter.saveToFile()
         }
     }
 }

@@ -2,11 +2,8 @@ QT += qml quick
 
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    cpp/presenter/QueueModel.cpp
-
-HEADERS += cpp/Packet.h \
-    cpp/presenter/QueueModel.h
+SOURCES += main.cpp
+HEADERS += cpp/Packet.h
 SOURCES += cpp/Packet.cpp
 HEADERS += cpp/Queue.h
 SOURCES += cpp/Queue.cpp
@@ -16,6 +13,10 @@ HEADERS += cpp/SimulationPresenter.h
 SOURCES += cpp/SimulationPresenter.cpp
 HEADERS += cpp/presenter/QueueItem.h
 SOURCES += cpp/presenter/QueueItem.cpp
+HEADERS += cpp/presenter/QueueModel.h
+SOURCES += cpp/presenter/QueueModel.cpp
+HEADERS += cpp/presenter/ResultItem.h
+SOURCES += cpp/presenter/ResultItem.cpp
 
 #HEADERS +=
 #SOURCES +=

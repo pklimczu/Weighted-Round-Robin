@@ -60,7 +60,7 @@ Rectangle {
 
             CustomInput {
                 id: throughputCustomInput
-                textValue: "1000"
+                textValue: "10"
             }
 
             CustomLabel {
@@ -166,7 +166,6 @@ Rectangle {
             bottomMargin: 50
         }
         onClicked: {
-            console.log("START clicked")
             simulationPresenter.startSimulation(throughputCustomInput.textValue, durationCustomInput.textValue)
         }
     }
@@ -174,10 +173,11 @@ Rectangle {
     /* Layer visible during simulation */
 
     WaitingLayer {
-        z: 50
-        visible: simulationPresenter.simulationInProgress
+        z: parent.parent.z + 50
+        visible: simulationPresenter.simulationInProgress ? true : false
+        opacity: simulationPresenter.simulationInProgress ? 0.6 : 0.0
         onVisibleChanged: {
-            console.log("TEST")
+            console.log("WaitingLayer - onVisibleChanged: ", visible)
         }
     }
 }

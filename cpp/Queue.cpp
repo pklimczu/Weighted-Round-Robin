@@ -61,7 +61,6 @@ bool Queue::getPacket(Packet *packet)
 
 void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
 {
-    std::cout << m_Name << ": " << packetsNumber << std::endl;
     if (m_NumberOfPacketsPerIteration != packetsNumber)
     {
         m_NumberOfPacketsPerIteration = packetsNumber;

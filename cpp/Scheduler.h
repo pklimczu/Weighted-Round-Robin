@@ -1,18 +1,20 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 #include "Queue.h"
+#include "SimulationPresenter.h"
 #include <map>
 #include <queue>
 #include <memory>
 #include <functional>
 #include <QStringList>
 
+class SimulationPresenter;
+
 class Scheduler
 {
 public:
     enum ServerState { IDLE, WORKING };
     enum SimulationEventType { IncomingPacket, ProcessPacket };
-    typedef std::map<std::string, Queue*> SimulationMap;
 
     struct SimulationEventStruct
     {
@@ -27,7 +29,9 @@ public:
             return eventTime < other.eventTime;
         }
     };
+    typedef std::map<std::string, Queue*> SimulationMap;
     typedef std::shared_ptr<SimulationEventStruct> pSimulationEventStruct;
+    typedef std::list<std::unique_ptr<SimulationPresenter::ResultStruct>> ListResultStruct;
 
     struct Comparator
     {
@@ -44,7 +48,7 @@ public:
     bool removeQueue(Queue &queue);
 
     void run();
-    void run(QStringList &resultList);
+    void run(ListResultStruct &resultList);
 
 private:
     void _normalizeQueuesWeights();
@@ -54,7 +58,7 @@ private:
     void _processPacketDeparture(SimulationEventStruct &event);
     void _calculatePacketSendingEndTime(Packet &packet, std::string queueName);
     void _prepareStatistics();
-    void _getStatistics(QStringList &resultList);
+    void _getStatistics(ListResultStruct &resultList);
 
     double _generateTime(double lambda);
 

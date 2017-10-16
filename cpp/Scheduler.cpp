@@ -9,7 +9,7 @@ double globalTime = 0;
 Scheduler::Scheduler() { }
 
 Scheduler::Scheduler(int linkMaxThroughput, double endTime)    :
-    m_LinkMaxThroughput(linkMaxThroughput),
+    m_LinkMaxThroughput(linkMaxThroughput*1000),                    // to make kilobits per second
     m_EndTime(endTime),
     m_QueueServedPacketsCounter(0),
     m_QueuesIterationCounter(0),
@@ -39,7 +39,7 @@ void Scheduler::run()
     _prepareStatistics();
 }
 
-void Scheduler::run(QStringList &resultList)
+void Scheduler::run(ListResultStruct &resultList)
 {
     _normalizeQueuesWeights();
     _doZeroIteration();
@@ -92,7 +92,6 @@ void Scheduler::_runSimulation()
 {
     while (globalTime < m_EndTime)
     {
-        std::cout << "Current time: " << globalTime << "\n";
         if (m_EventPriorityQueue.empty())
             break;
         auto event = m_EventPriorityQueue.top();
@@ -111,6 +110,7 @@ void Scheduler::_runSimulation()
                 break;
         }
     }
+    globalTime = 0;
 }
 
 void Scheduler::_processPacketArrival(SimulationEventStruct &event)
@@ -200,19 +200,16 @@ void Scheduler::_prepareStatistics()
     }
 }
 
-void Scheduler::_getStatistics(QStringList &resultList)
+void Scheduler::_getStatistics(ListResultStruct &resultList)
 {
+    typedef SimulationPresenter::ResultStruct resultStruct;
     resultList.clear();
-    std::stringstream result;
     for (const auto &q : m_QueuesMap)
     {
-        result << "#######################################\n";
-        result << "NAME: \t" << q.second->getName() << "\n";
-        result << "Number of packets in buffor: \t\t\t" << q.second->getNumberOfPacketsInBuffor() << "\n";
-        result << "Number of processed packets: \t\t\t" << q.second->getNumberOfProcessedPackets() << "\n";
-        result << "Number of rejected packets: \t\t\t" << q.second->getNumberOfRejectedPackets() << "\n";
-        result << "Number of packets served without being in queue: \t" << q.second->getNumberOfPacketsServedWithoutBeingInQueue() << "\n";
-        resultList.append(QString::fromStdString(result.str()));
-        result.clear();
+        resultList.push_back(std::unique_ptr<resultStruct>(new resultStruct(q.second->getName(),
+                                                                         q.second->getNumberOfPacketsInBuffor(),
+                                                                         q.second->getNumberOfProcessedPackets(),
+                                                                         q.second->getNumberOfRejectedPackets(),
+                                                                         q.second->getNumberOfPacketsServedWithoutBeingInQueue())));
     }
 }
