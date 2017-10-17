@@ -1,11 +1,13 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QtWebView/QtWebView>
 #include "cpp/SimulationPresenter.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+    QtWebView::initialize();
 
     qmlRegisterType<SimulationPresenter>("SimulationPresenter", 1, 0, "SimulationPresenter");
 

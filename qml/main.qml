@@ -8,10 +8,13 @@ ApplicationWindow {
 
     id: appWindow
     visible: true
-    width: 800
-    height: 630
+    maximumWidth: 800
+    maximumHeight: 630
+    minimumWidth: 800
+    minimumHeight: 630
     title: qsTr("Weighted Round Robint - Event Simulation")
     color: "#f9f9f9"
+
 
     header: Header {}
 
@@ -22,7 +25,7 @@ ApplicationWindow {
         interactive: false
 
         Page {
-            title: "HOW DOES IT WORK"
+            HelpView { }
         }
 
         Page {
@@ -88,13 +91,14 @@ ApplicationWindow {
             textValue: qsTr("Main view")
             orderNumber: 1
             currentIndex: tabBar.currentIndex
+            width: 320
         }
 
         CustomTabButton {
             textValue: qsTr("Results")
             orderNumber: 2
             currentIndex: tabBar.currentIndex
-//            enabled: false
+            width: 320
         }
     }
 }

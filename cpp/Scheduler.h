@@ -31,7 +31,7 @@ public:
     };
     typedef std::map<std::string, Queue*> SimulationMap;
     typedef std::shared_ptr<SimulationEventStruct> pSimulationEventStruct;
-    typedef std::list<std::unique_ptr<SimulationPresenter::ResultStruct>> ListResultStruct;
+    typedef std::list<std::shared_ptr<SimulationPresenter::ResultStruct>> ListResultStruct;
 
     struct Comparator
     {

@@ -2,6 +2,7 @@
 #define SIMULATIONPRESENTER_H
 
 #include <QObject>
+#include <QTimer>
 #include <memory>
 #include "presenter/QueueItem.h"
 #include "presenter/QueueModel.h"
@@ -16,6 +17,7 @@ class SimulationPresenter : public QObject
     Q_PROPERTY(QList<QObject*> resultList READ resultList NOTIFY resultListChanged)
     Q_PROPERTY(bool showErrors READ showErrors WRITE setShowErrors NOTIFY showErrorsChanged)
     Q_PROPERTY(QString listOfErrors READ listOfErrors NOTIFY listOfErrorsChanged)
+    Q_PROPERTY(float progressValue READ progressValue NOTIFY progressValueChanged)
 
 public:
     struct ResultStruct
@@ -48,12 +50,18 @@ public:
     QString listOfErrors() const { return m_ErrorsList.join("\n"); }
     Q_SIGNAL void listOfErrorsChanged();
 
+    float progressValue() const { return m_ProgressValue; }
+    Q_SIGNAL void progressValueChanged();
+
     Q_INVOKABLE void addQueue(QVariantList queueArguments);
     Q_INVOKABLE void removeQueue(int index);
 
     Q_INVOKABLE void startSimulation(int throughput, double duration);
 
     Q_INVOKABLE void saveToFile();
+
+    Q_SIGNAL void resultsReady();
+    void onResultsReady();
 
 private:
     bool _parseName(QVariant &variant, QString &returnString);
@@ -62,14 +70,20 @@ private:
     bool _parseWeight(QVariant &variant, int &returnWeight);
     bool _parseBufforSize(QVariant &variant, int &returnBufforSize);
 
+    void _runSimulation(int throughput, double duration);
     void _changeSimulationState(bool newState);
-    void _prepareResults(std::list<std::unique_ptr<ResultStruct>> &listOfResult);
+    void _prepareResults(std::list<std::shared_ptr<ResultStruct>> &listOfResult);
+    void _changeProgressValue();
 
     QueueModel *m_ListOfQueuesItems;
     QList<QString> m_ErrorsList;
     bool m_IsSimulationInProgress;
+    QList<QObject*> m_ThreadResultList;
     QList<QObject*> m_ResultsList;
     bool m_ShowErrors;
+    float m_ProgressValue;
+    QTimer *m_TimerGlobalTime;
+    double m_SimulationDuration;
 };
 
 #endif // SIMULATIONPRESENTER_H

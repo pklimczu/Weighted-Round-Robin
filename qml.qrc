@@ -17,5 +17,6 @@
         <file>qml/MainView.qml</file>
         <file>qml/CustomTabButton.qml</file>
         <file>qml/ResultsView.qml</file>
+        <file>qml/HelpView.qml</file>
     </qresource>
 </RCC>

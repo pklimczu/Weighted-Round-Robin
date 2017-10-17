@@ -31,6 +31,7 @@ public:
     int withoutInQueue() const { return m_WithoutInQueue; }
     Q_SIGNAL void withoutInQueueChanged();
 
+    void createFromAnother(const ResultItem &resultItem);
 private:
     QString m_Name;
     int m_InBuffor;

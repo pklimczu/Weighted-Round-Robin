@@ -1,4 +1,4 @@
-QT += qml quick
+QT += qml quick webview
 
 CONFIG += c++11
 

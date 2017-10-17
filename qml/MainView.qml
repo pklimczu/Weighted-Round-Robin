@@ -176,8 +176,5 @@ Rectangle {
         z: parent.parent.z + 50
         visible: simulationPresenter.simulationInProgress ? true : false
         opacity: simulationPresenter.simulationInProgress ? 0.6 : 0.0
-        onVisibleChanged: {
-            console.log("WaitingLayer - onVisibleChanged: ", visible)
-        }
     }
 }

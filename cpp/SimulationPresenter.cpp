@@ -4,13 +4,27 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTextStream>
+#include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 #include "Scheduler.h"
+
+extern double globalTime;
 
 SimulationPresenter::SimulationPresenter(QObject *parent)   :
     m_IsSimulationInProgress(false)
   , m_ShowErrors(false)
+  , m_ProgressValue(0.0)
+  , m_TimerGlobalTime(new QTimer())
 {
     m_ListOfQueuesItems = new QueueModel(this);
+    connect(this, &SimulationPresenter::resultsReady,
+            this, &SimulationPresenter::onResultsReady);
+
+    connect(m_TimerGlobalTime, &QTimer::timeout,
+            this, &SimulationPresenter::_changeProgressValue);
+
+    m_TimerGlobalTime->setSingleShot(false);
+    m_TimerGlobalTime->setInterval(100);
 }
 
 SimulationPresenter::~SimulationPresenter()
@@ -62,23 +76,11 @@ void SimulationPresenter::removeQueue(int index)
 
 void SimulationPresenter::startSimulation(int throughput, double duration)
 {
-    std::list<std::unique_ptr<ResultStruct>> stdListOfResults;
-    _changeSimulationState(true);
-    Scheduler *scheduler = new Scheduler(throughput, duration);
-    for (const QueueItem *q : m_ListOfQueuesItems->getListOfItems())
-    {
-        /* In order to eliminate problem with queues named the same */
-        std::string suffix = std::to_string(rand()%1000);
-        scheduler->addQueue(new Queue(q->name().toStdString() + suffix,
-                                      q->lambdaInt(),
-                                      q->avgSizeInt(),
-                                      q->weightInt(),
-                                      q->bufforSizeInt()));
-    }
-    scheduler->run(stdListOfResults);
-    _changeSimulationState(false);
+    m_TimerGlobalTime->start();
 
-    _prepareResults(stdListOfResults);
+    m_SimulationDuration = duration;
+    _changeSimulationState(true);
+    QtConcurrent::run(this, &SimulationPresenter::_runSimulation, throughput, duration);
 }
 
 void SimulationPresenter::saveToFile()
@@ -107,6 +109,19 @@ void SimulationPresenter::saveToFile()
     }
     out << "########################################\n";
     file.close();
+}
+
+void SimulationPresenter::onResultsReady()
+{
+    m_ResultsList.clear();
+    /* Avoiding thread interference */
+    for (auto const q : m_ThreadResultList)
+    {
+        ResultItem *resultItem = new ResultItem();
+        resultItem->createFromAnother(*dynamic_cast<ResultItem*>(q));
+        m_ResultsList.append(resultItem);
+    }
+    Q_EMIT resultListChanged();
 }
 
 bool SimulationPresenter::_parseName(QVariant &variant, QString &returnString)
@@ -195,20 +210,39 @@ bool SimulationPresenter::_parseBufforSize(QVariant &variant, int &returnBufforS
     return isBufforSize;
 }
 
+void SimulationPresenter::_runSimulation(int throughput, double duration)
+{
+    std::list<std::shared_ptr<ResultStruct>> stdListOfResults;
+    Scheduler *scheduler = new Scheduler(throughput, duration);
+    for (const QueueItem *q : m_ListOfQueuesItems->getListOfItems())
+    {
+        /* In order to eliminate problem with queues named the same */
+        std::string suffix = std::to_string(rand()%1000);
+        scheduler->addQueue(new Queue(q->name().toStdString() + suffix,
+                                      q->lambdaInt(),
+                                      q->avgSizeInt(),
+                                      q->weightInt(),
+                                      q->bufforSizeInt()));
+    }
+    scheduler->run(stdListOfResults);
+    _changeSimulationState(false);
+    _prepareResults(stdListOfResults);
+}
+
 void SimulationPresenter::_changeSimulationState(bool newState)
 {
     m_IsSimulationInProgress = newState;
     Q_EMIT simulationInProgressChanged();
 }
 
-void SimulationPresenter::_prepareResults(std::list<std::unique_ptr<ResultStruct> > &listOfResult)
+void SimulationPresenter::_prepareResults(std::list<std::shared_ptr<ResultStruct> > &listOfResult)
 {
-    for (auto *rl : m_ResultsList)
+    for (auto *rl : m_ThreadResultList)
     {
         delete rl;
     }
 
-    m_ResultsList.clear();
+    m_ThreadResultList.clear();
     for (const auto &q : listOfResult)
     {
         ResultItem *resultItem = new ResultItem(q.get()->name,
@@ -216,7 +250,17 @@ void SimulationPresenter::_prepareResults(std::list<std::unique_ptr<ResultStruct
                                                 q.get()->proccessedPackets,
                                                 q.get()->rejectedPackets,
                                                 q.get()->servedWithoutQueue);
-        m_ResultsList.append(resultItem);
+        m_ThreadResultList.append(resultItem);
     }
-    Q_EMIT resultListChanged();
+    Q_EMIT resultsReady();
+}
+
+void SimulationPresenter::_changeProgressValue()
+{
+    m_ProgressValue = globalTime / m_SimulationDuration * 100;
+    if (m_ProgressValue > 99.9)
+    {
+        m_TimerGlobalTime->stop();
+    }
+    Q_EMIT progressValueChanged();
 }

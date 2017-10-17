@@ -206,7 +206,7 @@ void Scheduler::_getStatistics(ListResultStruct &resultList)
     resultList.clear();
     for (const auto &q : m_QueuesMap)
     {
-        resultList.push_back(std::unique_ptr<resultStruct>(new resultStruct(q.second->getName(),
+        resultList.push_back(std::shared_ptr<resultStruct>(new resultStruct(q.second->getName(),
                                                                          q.second->getNumberOfPacketsInBuffor(),
                                                                          q.second->getNumberOfProcessedPackets(),
                                                                          q.second->getNumberOfRejectedPackets(),
