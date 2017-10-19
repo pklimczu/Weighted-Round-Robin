@@ -3,7 +3,7 @@
 #include <iostream>
 
 extern double globalTime;
-static const int SCALING_FACTOR = 100;
+static const int SCALING_FACTOR = 20000000;
 
 Queue::Queue()
 {
@@ -69,6 +69,5 @@ void Queue::setNumberOfPacketsPerIteration(int packetsNumber)
 
 double Queue::generateRandomTime()
 {
-    float makeRoundProperly = 1000;
-    return round(1.0 * SCALING_FACTOR * makeRoundProperly / static_cast<double>(m_Distribution(m_Generator))) / makeRoundProperly;
+    return 1.0 * SCALING_FACTOR / static_cast<double>(m_Distribution(m_Generator));
 }

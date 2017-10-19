@@ -104,7 +104,7 @@ void Scheduler::_runSimulation()
                 _processPacketArrival(*event.get());
                 break;
             case ProcessPacket:
-                _processPacketDeparture(*event.get());
+                _processPacketDeparture();
                 break;
             default:
                 break;
@@ -123,7 +123,7 @@ void Scheduler::_processPacketArrival(SimulationEventStruct &event)
 
     if (m_ServerState == IDLE)
     {
-        _processPacketDeparture(event);
+        _processPacketDeparture(&event);
         m_QueuesMap[event.queueName]->addPacketProcessedWithoutBeingInQueue();
         m_ActiveQueueName = event.queueName;
     }
@@ -134,27 +134,28 @@ void Scheduler::_processPacketArrival(SimulationEventStruct &event)
     }
 }
 
-void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
+void Scheduler::_processPacketDeparture(SimulationEventStruct *event)
 {
     Packet packet;
 
     if (m_ServerState == IDLE)
     {
         m_ServerState = WORKING;
-        packet.setPacketSize(m_QueuesMap[event.queueName]->getAvgPacketSize());
-        packet.setTimeOfArrival(event.eventTime);
-        _calculatePacketSendingEndTime(packet, event.queueName);
+        packet.setPacketSize(m_QueuesMap[event->queueName]->getAvgPacketSize());
+        packet.setTimeOfArrival(event->eventTime);
+        _calculatePacketSendingEndTime(packet, event->queueName);
         m_QueueServedPacketsCounter++;
-        m_ActiveQueueName = event.queueName;
+        m_ActiveQueueName = event->queueName;
     }
     else if (m_QueueServedPacketsCounter < m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration() &&
-             m_QueuesMap[m_ActiveQueueName]->returnPacket(packet))
+             m_QueuesMap[m_ActiveQueueName]->isPacketInBuffor())
     {
         m_QueuesIterationCounter = 0;
-        _calculatePacketSendingEndTime(packet, event.queueName);
+        m_QueuesMap[m_ActiveQueueName]->returnPacket(packet);
+        _calculatePacketSendingEndTime(packet, m_ActiveQueueName);
         m_QueueServedPacketsCounter++;
     }
-    else if (!m_QueuesMap[m_ActiveQueueName]->returnPacket(packet) ||
+    else if (!m_QueuesMap[m_ActiveQueueName]->isPacketInBuffor() ||
              m_QueueServedPacketsCounter >= m_QueuesMap[m_ActiveQueueName]->getPacketsPerIteration())
     {
         m_QueuesIterationCounter++;
@@ -173,7 +174,7 @@ void Scheduler::_processPacketDeparture(SimulationEventStruct &event)
                 itr = m_QueuesMap.begin();
             }
             m_ActiveQueueName = (*itr).second->getName();
-            _processPacketDeparture(event);
+            _processPacketDeparture();
         }
     }
 }

@@ -39,6 +39,7 @@ public:
 
     void addPacketProcessedWithoutBeingInQueue() { m_NumberOfPacketsServedWithoutBeingInQueue++; }
     double generateRandomTime();
+    bool isPacketInBuffor() const { return m_Queue.size() > 0; }
 
 private:
     int m_Lambda;               // Determines frequency of incoming next packets due to Poisson distribution
